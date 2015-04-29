@@ -14,6 +14,8 @@
 		1A0C48DF1AB80B2D00DF08DE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0C48DE1AB80B2D00DF08DE /* Images.xcassets */; };
 		1A0C48E21AB80B2D00DF08DE /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A0C48E01AB80B2D00DF08DE /* LaunchScreen.xib */; };
 		1A0C48EE1AB80B2D00DF08DE /* TTAlertServiceDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C48ED1AB80B2D00DF08DE /* TTAlertServiceDemoTests.m */; };
+		1A0C48FC1AB80B6300DF08DE /* TTAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C48F91AB80B6300DF08DE /* TTAlert.m */; };
+		1A0C48FD1AB80B6300DF08DE /* TTAlertService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0C48FB1AB80B6300DF08DE /* TTAlertService.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +42,10 @@
 		1A0C48E71AB80B2D00DF08DE /* TTAlertServiceDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TTAlertServiceDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A0C48EC1AB80B2D00DF08DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A0C48ED1AB80B2D00DF08DE /* TTAlertServiceDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TTAlertServiceDemoTests.m; sourceTree = "<group>"; };
+		1A0C48F81AB80B6300DF08DE /* TTAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTAlert.h; sourceTree = "<group>"; };
+		1A0C48F91AB80B6300DF08DE /* TTAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTAlert.m; sourceTree = "<group>"; };
+		1A0C48FA1AB80B6300DF08DE /* TTAlertService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTAlertService.h; sourceTree = "<group>"; };
+		1A0C48FB1AB80B6300DF08DE /* TTAlertService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTAlertService.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +87,7 @@
 		1A0C48D01AB80B2D00DF08DE /* TTAlertServiceDemo */ = {
 			isa = PBXGroup;
 			children = (
+				1A0C48F71AB80B6300DF08DE /* AlarmService */,
 				1A0C48D51AB80B2D00DF08DE /* AppDelegate.h */,
 				1A0C48D61AB80B2D00DF08DE /* AppDelegate.m */,
 				1A0C48D81AB80B2D00DF08DE /* ViewController.h */,
@@ -117,6 +124,17 @@
 				1A0C48EC1AB80B2D00DF08DE /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1A0C48F71AB80B6300DF08DE /* AlarmService */ = {
+			isa = PBXGroup;
+			children = (
+				1A0C48F81AB80B6300DF08DE /* TTAlert.h */,
+				1A0C48F91AB80B6300DF08DE /* TTAlert.m */,
+				1A0C48FA1AB80B6300DF08DE /* TTAlertService.h */,
+				1A0C48FB1AB80B6300DF08DE /* TTAlertService.m */,
+			);
+			path = AlarmService;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -219,6 +237,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A0C48FD1AB80B6300DF08DE /* TTAlertService.m in Sources */,
+				1A0C48FC1AB80B6300DF08DE /* TTAlert.m in Sources */,
 				1A0C48DA1AB80B2D00DF08DE /* ViewController.m in Sources */,
 				1A0C48D71AB80B2D00DF08DE /* AppDelegate.m in Sources */,
 				1A0C48D41AB80B2D00DF08DE /* main.m in Sources */,
@@ -344,6 +364,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = TTAlertServiceDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -354,6 +375,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = TTAlertServiceDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

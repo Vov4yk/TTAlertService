@@ -12,6 +12,7 @@
 
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "TTAlert.h"
 
 @interface TTAlertService : NSObject <UIAlertViewDelegate>
@@ -22,5 +23,6 @@
 + (TTAlertService*)sharedService;
 
 - (void)addAlert:(TTAlert*)alert;
+- (void)insertAlert:(TTAlert*)alert;
 
 @end

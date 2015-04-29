@@ -9,11 +9,13 @@
 //
 
 #import "TTAlertService.h"
-#import "TTCore.h"
+
+#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+
 
 static TTAlertService * sharedInstance;
 
-static float const C_ALERTS_DELAY = 0.1;
+static float const C_ALERTS_DELAY = 0.0;
 
 @implementation TTAlertService
 
@@ -29,20 +31,12 @@ static float const C_ALERTS_DELAY = 0.1;
 
 - (void)addAlert:(TTAlert *)alert
 {
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0"))
+    if (alert.appearenceDelay)
     {
-        UIAlertView * alertView = [self alertViewFor:alert];
-        if (alertView)
-        {
-            [self.alertsQueue addObject:alert];
-            [alertView show];
-            
-            if (alert.liveTime)
-            {
-                [self performSelector:@selector(dismissAlert:) withObject:alertView afterDelay:alert.liveTime];
-            }
-        }
+        [self performSelector:@selector(addAlert:) withObject:alert afterDelay:alert.appearenceDelay];
+        alert.appearenceDelay = 0;
     }
+    
     else
     {
         [self.alertsQueue addObject:alert];
@@ -53,12 +47,24 @@ static float const C_ALERTS_DELAY = 0.1;
     }
 }
 
+- (void)insertAlert:(TTAlert *)alert
+{
+    if (self.alertsQueue.count)
+    {
+        [self.alertsQueue insertObject:alert atIndex:0];
+    }
+    else
+    {
+        [self addAlert:alert];
+    }
+}
+
 #pragma mark - UIAlertView Delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     TTAlert * alert = [self alertForTitle:alertView.title message:alertView.message];
-    if (alert)
+    if (alert && alert.actions)
     {
         @try {
             [alert.actions[buttonIndex] actionBlock]();
@@ -74,6 +80,10 @@ static float const C_ALERTS_DELAY = 0.1;
 {
     TTAlert * alert = [self alertForTitle:alertView.title message:alertView.message];
     [self.alertsQueue removeObject:alert];
+    if (self.alertsQueue.count)
+    {
+        [self showNextAlert];
+    }
 }
 
 
@@ -81,34 +91,51 @@ static float const C_ALERTS_DELAY = 0.1;
 
 - (void)showNextAlert
 {
+    
     if (!self.alertsQueue.count)
         return;
-    
+ 
     TTAlert * alert = self.alertsQueue.firstObject;
-    
-    _alertController = [UIAlertController alertControllerWithTitle:alert.title
-                                                                              message:alert.message
-                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    for (TTAlertAction * ourAction in alert.actions)
-    {
-        UIAlertAction * alertAction = [UIAlertAction actionWithTitle:ourAction.title
-                                                               style:ourAction.style
-                                                             handler:^(UIAlertAction *action) {
-                                                                 [self alertControllerDidDissmissed];
-                                                                 @try {
-                                                                     ourAction.actionBlock();
-                                                                 }
-                                                                 @catch (NSException *exception) {
-                                                                     NSLog(@"can't run action block");
-                                                                 }
-                                                                 @finally {}
-                                                             }];
-        [_alertController addAction:alertAction];
-    }
 
-    [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:_alertController
-                                                                                     animated:YES
-                                                                                   completion:nil];
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0"))
+    {
+        UIAlertView * alertView = [self alertViewFor:alert];
+        if (alertView)
+        {
+            [alertView show];
+            if (alert.liveTime)
+            {
+                [self performSelector:@selector(dismissAlert:) withObject:alertView afterDelay:alert.liveTime];
+            }
+        }
+    }
+    else
+    {
+        _alertController = [UIAlertController alertControllerWithTitle:alert.title
+                                                               message:alert.message
+                                                        preferredStyle:UIAlertControllerStyleAlert];
+        for (TTAlertAction * ourAction in alert.actions)
+        {
+            UIAlertAction * alertAction = [UIAlertAction actionWithTitle:ourAction.title
+                                                                   style:ourAction.style
+                                                                 handler:^(UIAlertAction *action) {
+                                                                     [self alertControllerDidDissmissed];
+                                                                     @try {
+                                                                         ourAction.actionBlock();
+                                                                     }
+                                                                     @catch (NSException *exception) {
+                                                                         NSLog(@"can't run action block");
+                                                                     }
+                                                                     @finally {}
+                                                                 }];
+            [_alertController addAction:alertAction];
+        }
+        
+        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:_alertController
+                                                                                         animated:YES
+                                                                                       completion:nil];
+    }
+    
     if (alert.liveTime)
     {
         [self performSelector:@selector(dismissAlert:) withObject:_alertController afterDelay:alert.liveTime];
@@ -126,9 +153,6 @@ static float const C_ALERTS_DELAY = 0.1;
 
 - (UIAlertView*)alertViewFor:(TTAlert*)alert
 {
-    if ([self alertForTitle:alert.title message:alert.message]) // search for alert duplications
-        return nil;
-    
     NSString * cancelButtonName = (alert.actions.count?[alert.actions.firstObject title]:@"Ok");
     UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:alert.title
                                                          message:alert.message
